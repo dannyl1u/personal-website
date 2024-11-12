@@ -1,0 +1,5 @@
+baseURL = "/"
+languageCode = 'en-us'
+title = "Liudogg's blog"
+author = "Danny Liu"
+theme = "hugo-bearblog"
