@@ -1,14 +1,11 @@
 name: Deploy Hugo Site to GitHub Pages
-
 on:
   push:
     branches:
       - main
-
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
@@ -21,9 +18,21 @@ jobs:
       - name: Build the Hugo site
         run: hugo --minify
 
+      # Use the repository password for the automated user
+      - name: Configure the repository password for the automated user
+        run: >
+          gh api /repos/dannyl1u/dannyl1u.github.io/git/branches -X "PATCH" \
+          --method "PATCH" \
+          --field name="build-deploy" \
+          --field ref="heads/${GITHUB_REF#refs/heads/}" \
+          --field auto-generate-branch-name=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Then add the password to the action
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
+          github_token: ${{ secrets.REPOSITORY_PASSWORD }}
+          publish_branch: ${GITHUB_REF#refs/heads/}
           publish_dir: ./public
