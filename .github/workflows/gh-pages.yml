@@ -1,29 +1,29 @@
-name: Deploy Hugo site to GitHub Pages
+name: Deploy Hugo Site to GitHub Pages
 
 on:
   push:
     branches:
-      - source  # change to main if this is your main branch
+      - main
 
 jobs:
-  deploy:
+  build-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Check out the repository
         uses: actions/checkout@v2
 
-      - name: Setup Hugo
+      - name: Set up Hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest'
 
-      - name: Build Hugo site
+      - name: Build the Hugo site
         run: hugo --minify
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: main
+          publish_branch: gh-pages
           publish_dir: ./public
