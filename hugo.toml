@@ -1,5 +1,5 @@
 baseURL = "/"
 languageCode = 'en-us'
-title = "Liudogg's blog"
+title = "Danny Liu"
 author = "Danny Liu"
 theme = "hugo-bearblog"
