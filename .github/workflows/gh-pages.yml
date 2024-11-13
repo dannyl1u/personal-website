@@ -19,8 +19,26 @@ jobs:
         run: hugo --minify
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.GH_PAT }}
-          publish_branch: gh-pages
-          publish_dir: ./public
+        run: |
+          # Configure Git
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          # Initialize the gh-pages branch
+          git fetch origin gh-pages
+          git checkout gh-pages || git checkout --orphan gh-pages
+
+          # Remove existing files in gh-pages
+          git rm -rf .
+
+          # Copy the contents of public/ to the root of gh-pages
+          cp -r ../public/* .
+
+          # Add and commit changes
+          git add .
+          git commit -m "Deploy Hugo site via GitHub Actions"
+
+          # Push changes to gh-pages branch
+          git push origin gh-pages --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
